@@ -85,9 +85,17 @@ namespace Identity.Services
             {
                 additionalClaims.Add(new Claim(ClaimTypes.AuthenticationMethod, authenticationMethod));
             }
-            
-            _db.Claims.Where(c => c.User == user).ToList()
-                .ForEach(c => additionalClaims.Add(new Claim(c.Type, c.Value)));
+
+            if (user.Claims != null)
+            {
+                // TODO: Update user to be non domain model
+                user.Claims.ToList().ForEach(c => additionalClaims.Add(new Claim(c.Type, c.Value)));
+            }
+            else
+            {
+                _db.Claims.Where(c => c.User == user).ToList()
+                    .ForEach(c => additionalClaims.Add(new Claim(c.Type, c.Value)));
+            }
 
             return SignInAsync(user, authenticationProperties, additionalClaims);
         }

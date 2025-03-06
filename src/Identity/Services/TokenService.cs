@@ -112,11 +112,6 @@ namespace Identity.Services
 				tokenDescriptor.Claims.Add(JwtClaimTypes.Scope, request.Scopes);
 			}
 
-			if (request.PublicKey != null)
-			{
-				tokenDescriptor.Claims.Add("public_key", request.PublicKey);
-			}
-
 			tokenDescriptor.Claims.Add(JwtClaimTypes.AuthenticationMethod, new[] { "external" });
 
 			var token = tokenHandler.CreateToken(tokenDescriptor);

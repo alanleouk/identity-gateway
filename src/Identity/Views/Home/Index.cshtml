@@ -19,7 +19,8 @@
         });
         request.open("POST", requestUri);
         
-        request.setRequestHeader('Authorization', 'Bearer ' + jwt);
+        // We don't use bearer auth at the moment
+        // request.setRequestHeader('Authorization', 'Bearer ' + jwt);
 
         document.getElementById('responseTextArea').value = '';
         request.send(requestBody);
@@ -32,7 +33,31 @@
     
     <h2 class="display-6">Current JWT</h2>
     <textarea type="text" id="jwt" class="form-control jwt" style="font-size: 60%; text-align: center;" rows="12">@ViewBag.Jwt</textarea>
-    
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h2 class="display-6">Claims</h2>
+        <div class="text-start">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var claim in User.Claims)
+                {
+                    <tr>
+                        <td>@claim.Type</td>
+                        <td>@claim.Value</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+
     <h2 class="display-6">Test Request</h2>
     <div class="row">
         <div class="col col-3">Request URL</div>

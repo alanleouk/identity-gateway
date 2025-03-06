@@ -45,22 +45,22 @@
         </div>
         <div class="col-sm">
             <div class="card border-warning mb-3">
-                <div class="card-header">Code Login</div>
+                <div class="card-header">OTP Login</div>
                 <div class="card-body">
-                    <form asp-controller="Account" asp-action="CodeLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    <form asp-controller="Account" asp-action="OtpLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="form-group row">
                             <label asp-for="Email" class="col-md-3 form-control-label">Email</label>
                             <div class="col-md-9">
-                                <input asp-for="Email" class="form-control" />
+                                <input asp-for="Email" class="form-control" value="test@test.local" />
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label asp-for="Code" class="col-md-3 form-control-label">Code</label>
+                            <label asp-for="Otp" class="col-md-3 form-control-label">OTP Code</label>
                             <div class="col-md-9">
-                                <input asp-for="Code" class="form-control" />
-                                <span asp-validation-for="Code" class="text-danger"></span>
+                                <input asp-for="Otp" class="form-control" value="test-code" />
+                                <span asp-validation-for="Otp" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group row">

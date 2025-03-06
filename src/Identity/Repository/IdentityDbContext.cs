@@ -8,7 +8,6 @@ namespace Identity.Repository
         public virtual DbSet<UserClaim> Claims { get; set; }
         public virtual DbSet<UserExternalLogin> ExternalLogins { get; set; }
         public virtual DbSet<UserToken> Tokens { get; set; }
-        public virtual DbSet<UserOneTimePassword> OneTimePasswords { get; set; }
 
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options)
         {
@@ -21,7 +20,6 @@ namespace Identity.Repository
             AddUserClaim(builder);
             AddUserExternalLogin(builder);
             AddUserToken(builder);
-            AddUserOneTimePassword(builder);
 
             base.OnModelCreating(builder);
         }
@@ -87,14 +85,6 @@ namespace Identity.Repository
                 .IsRequired();
             
             builder.Entity<UserToken>()
-                .Property(item => item.Key)
-                .HasMaxLength(450)
-                .IsRequired();
-        }
-        
-        private static void AddUserOneTimePassword(ModelBuilder builder)
-        {
-            builder.Entity<UserOneTimePassword>()
                 .Property(item => item.Key)
                 .HasMaxLength(450)
                 .IsRequired();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using Identity.Models;
 using Identity.Repository;
 using Identity.Services;
@@ -45,7 +46,7 @@ namespace Identity.Controllers
                 Nonce = "Test Nonce",
                 Email = user.Email,
                 Subject = userId.Value.ToString().ToLower(),
-                Roles = user.Claims.Where(item => item.Type == "role").Select(item => item.Value).ToList(),
+                Roles = user.Claims.Where(item => item.Type == ClaimTypes.Role).Select(item => item.Value).ToList(),
                 Scopes = user.Claims.Where(item => item.Type == "scope").Select(item => item.Value).ToList(),
                 PublicKey = User.Claims.FirstOrDefault(item => item.Type == "public_key")?.Value
             };

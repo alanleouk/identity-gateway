@@ -1,5 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Identity
+﻿namespace Identity
 {
     [Serializable]
     public class UserExternalLogin

@@ -1,5 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Identity
+﻿namespace Identity
 {
     public class User
     {
@@ -23,6 +22,5 @@ namespace Identity
         public IList<UserClaim>? Claims { get; set; }
         public IList<UserExternalLogin>? ExternalLogins { get; set; }
         public IList<UserToken>? UserTokens { get; set; }
-        public IList<UserOneTimePassword>? OneTimePasswords { get; set; }
     }
 }

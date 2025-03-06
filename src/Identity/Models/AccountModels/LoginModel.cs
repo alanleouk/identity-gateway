@@ -10,7 +10,7 @@ namespace Identity.Models.AccountModels
 
         [Required]
         [DataType(DataType.Password)]
-        public string? Code { get; set; }
+        public string? Otp { get; set; }
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }

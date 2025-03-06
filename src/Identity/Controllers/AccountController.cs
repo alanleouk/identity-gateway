@@ -60,13 +60,31 @@ namespace Identity.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult CodeLogin(string? returnUrl = null)
+        public async Task<IActionResult> OtpLogin(LoginModel model, string? returnUrl = null)
         {
-            // TODO: Code Login
-            ViewData["ReturnUrl"] = returnUrl;
+            // TODO: Otp Login
+            // ViewData["ReturnUrl"] = returnUrl;
+
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Username = model.Email, 
+                    Email = model.Email, 
+                    Claims = new List<UserClaim>
+                    {
+                        new() { Type = ClaimTypes.Role, Value = "demo-user" },
+                        new() { Type = ClaimTypes.Role, Value = "another-role" }
+                    }
+                };
+                await _loginService.LoginAsync(user, false, "OtpCode");
+                return RedirectToLocal(returnUrl);
+            }
+
             return View(nameof(Login));
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
