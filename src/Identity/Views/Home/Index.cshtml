@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<script type="text/javascript">
+    function sendRequest() {
+        const requestUri = document.getElementById('requestUri').value;
+        const requestBody = document.getElementById('requestBody').value;
+        sendRequestInternal(requestUri, requestBody);
+    }
+
+    async function sendRequestInternal(requestUri, requestBody) {
+        const jwt = document.getElementById('jwt').value;
+        const request = new XMLHttpRequest();
+        request.addEventListener("load", _ => {
+            if (request.responseText) {
+                document.getElementById('responseTextArea').value = request.responseText;
+            }
+        });
+        request.open("POST", requestUri);
+        
+        request.setRequestHeader('Authorization', 'Bearer ' + jwt);
+
+        document.getElementById('responseTextArea').value = '';
+        request.send(requestBody);
+    }
+</script>
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Proof of concept, work in progress, Identity Server to demonstrate verified requests</p>
+    
+    <h2 class="display-6">Current JWT</h2>
+    <textarea type="text" id="jwt" class="form-control jwt" style="font-size: 60%; text-align: center;" rows="12">@ViewBag.Jwt</textarea>
+    
+    <h2 class="display-6">Test Request</h2>
+    <div class="row">
+        <div class="col col-3">Request URL</div>
+        <div class="col"><input type="text" id="requestUri" class="form-control" value="https://local-5.dev.alanleouk.net/api/test/TestAuthorisedPostRequest?item1=test1&item2=test2"/></div>
+    </div>
+    <div class="row">
+        <div class="col col-3">Request Body</div>
+        <div class="col"><input type="text" id="requestBody" class="form-control" value='{"item3": "value3", "item4": "value4" }'/></div>
+    </div>
+    <div class="row">
+        <div class="col col-3">Commands</div>
+        <div class="col">
+            <button class="btn btn-secondary" onclick="sendRequest();">Send Request</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-3">Result</div>
+        <div class="col"><textarea id="responseTextArea" type="text" class="form-control" style="font-size: 60%; text-align: center;" rows="12"></textarea></div>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+﻿@using Identity.Models.AccountModels
+@using Identity.Services
+@model LoginModel
+@inject ILoginService LoginService
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container">
+    <div class="h1">@ViewData["Title"]</div>
+
+    <div class="row">
+        <div class="col-sm">
+            <div class="card border-success mb-3">
+                <div class="card-header">Service Login</div>
+                <div class="card-body">
+                    @{
+                        var loginProviders = (await LoginService.GetExternalAuthenticationSchemesAsync()).ToList();
+                        if (loginProviders.Count == 0)
+                        {
+                            <p>
+                                There are no external authentication services configured.
+                            </p>
+                        }
+                        else
+                        {
+                            <p>
+                                Login with your favourite social media service,
+                                you will need to give basic access permissions the first tine you use this.
+                            </p>
+                            <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                                <p class="mb-0">
+                                    @foreach (var provider in loginProviders)
+                                    {
+                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    }
+                                </p>
+                                <input type="hidden" class="publicKey" asp-for="PublicKey"></input> 
+                            </form>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card border-warning mb-3">
+                <div class="card-header">Code Login</div>
+                <div class="card-body">
+                    <form asp-controller="Account" asp-action="CodeLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group row">
+                            <label asp-for="Email" class="col-md-3 form-control-label">Email</label>
+                            <div class="col-md-9">
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="Code" class="col-md-3 form-control-label">Code</label>
+                            <div class="col-md-9">
+                                <input asp-for="Code" class="form-control" />
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-md-3 col-md-9">
+                                <div class="checkbox">
+                                    <label asp-for="RememberMe">
+                                        <input asp-for="RememberMe" />
+                                        Remember Me
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-md-3 col-md-10">
+                                <button type="submit" class="btn btn-secondary">Login</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

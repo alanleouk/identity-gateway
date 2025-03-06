@@ -1,0 +1,81 @@
+﻿@using Identity.Models.AccountModels
+@model InfoModel
+
+@{
+    ViewData["Title"] = "Account Info";
+}
+
+<div class="container">
+    <div class="h1">@ViewData["Title"]</div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            Details
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col col-xs-12 col-sm-3"><label>Email</label></div>
+                <div class="col">@Model.Email</div>
+            </div>
+            <div class="row">
+                <div class="col col-xs-12 col-sm-3"><label>Roles</label></div>
+                <div class="col">@Model.Roles</div>
+            </div>
+            <div class="row">
+                <div class="col col-xs-12 col-sm-3"><label>Certificates</label></div>
+                <div class="col">@Model.Certificates</div>
+            </div>
+            <div class="row">
+                <div class="col col-xs-12 col-sm-3"><label>Import Certificate</label></div>
+                <div class="col">
+                    <form asp-controller="Account" asp-action="ImportCertificate" method="post" enctype="multipart/form-data" class="form-horizontal">
+                        <input type="file" name="file" class="form-control" />
+                        <input type="password" name="password" class="form-control" />
+                        <button type="submit" class="btn btn-primary" title="Submit certificate for import">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p>
+        Login services allow you to login to this site without using a username and password.
+    </p>
+
+    @if (Model.Logins?.Count > 0)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                Existing Login Services
+            </div>
+            <div class="card-body">
+                @foreach (var login in Model.Logins)
+                {
+                    <div>@login.ProviderDisplayName</div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.OtherLogins?.Count > 0)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                Add Login Services
+            </div>
+            <div class="card-body">
+                <form asp-controller="Account" asp-action="LinkLogin" method="post" class="form-horizontal">
+                    @foreach (var schema in Model.OtherLogins)
+                    {
+                        <button type="submit" class="btn btn-primary" name="provider" value="@schema.Name" title="Log in using your @schema.DisplayName account">@schema.DisplayName</button>
+                    }
+                </form>
+            </div>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+
+}

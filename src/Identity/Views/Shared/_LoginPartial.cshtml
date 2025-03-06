@@ -1,0 +1,22 @@
+﻿@using Identity.Services
+
+@inject ILoginService LoginService
+
+@if (LoginService.IsLoggedIn(User))
+{
+    <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
+        <ul class="nav navbar-nav float-right">
+            <li class="nav-item">
+                <button type="submit" class="btn btn-outline-warning">Log off</button>
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav float-right">
+        <li class="nav-item">
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success">Log in</a>
+        </li>
+    </ul>
+}
