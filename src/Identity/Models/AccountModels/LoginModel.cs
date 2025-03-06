@@ -15,6 +15,8 @@ namespace Identity.Models.AccountModels
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
         
+        public string? CounterSignedAccessKey { get; set; }
+        
         public string? PublicKey { get; set; }
     }
 }

@@ -20,10 +20,17 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var services = builder.Services;
 
+// TODO: Move to config and use when signing, etc
 var endpoints = new List<string>
 {
     "https://localhost",
     "https://local-5.dev.alanleouk.net"
+};
+
+// TODO: Move to config and use in CounterSignedAccessKeyLogin services
+var trustedKeys = new List<string>
+{
+    "https://local-5.dev.alanleouk.net/.well-known/openid-configuration/jwks?kid=07Zb%2FMNJU4UtG3GLJbm7"
 };
 
 #if DEBUG
@@ -177,8 +184,8 @@ app.MapGet(EndpointConstants.Configuration,
     await mediator.Send(new GetConfigurationFeature.Request()));
 
 app.MapGet(EndpointConstants.Jwks,
-    async (HttpContext context, [FromServices] IMediator mediator) =>
-    await mediator.Send(new GetJwksFeature.Request()));
+    async (HttpContext context, [FromServices] IMediator mediator, [FromQuery] string? kid = null) =>
+    await mediator.Send(new GetJwksFeature.Request { Kid = kid }));
 
 app.MapPost(EndpointConstants.Token,
     async (HttpContext context, [FromServices] IMediator mediator,

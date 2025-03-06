@@ -62,7 +62,7 @@ namespace Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OtpLogin(LoginModel model, string? returnUrl = null)
         {
-            // TODO: Otp Login
+            // TODO: Otp Login (Use UserToken)
             // ViewData["ReturnUrl"] = returnUrl;
 
             if (ModelState.IsValid)
@@ -83,6 +83,31 @@ namespace Identity.Controllers
             }
 
             return View(nameof(Login));
+        }
+        
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CounterSignedAccessKeyLogin(LoginModel model, string? returnUrl = null)
+        {
+            // TODO: CounterSignedAccessKey Login (Use UserToken)
+            // ViewData["ReturnUrl"] = returnUrl;
+            // The API should create a link with a signed message in the query
+            // The message should contain the allowed role "customer" and the registration.
+            // The creator must use and expose a public key defined in the trustedKeys configuration of the identity server
+            // THe identity server verifies the request (expiry, signature, etc).
+            // If all checks out then an access and refresh token are issued with the apopropriate claims.
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Claims = new List<UserClaim>
+                {
+                    new() { Type = ClaimTypes.Role, Value = "customer" },
+                }
+            };
+            await _loginService.LoginAsync(user, false, "CounterSignedAccessKey");
+            return RedirectToLocal(returnUrl);
         }
 
         [HttpPost]

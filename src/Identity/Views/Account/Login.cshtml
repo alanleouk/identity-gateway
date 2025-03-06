@@ -83,6 +83,40 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="card border-warning mb-3">
+                <div class="card-header">Signed Access Login</div>
+                <div class="card-body">
+                    <form asp-controller="Account" asp-action="CounterSignedAccessKeyLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group row">
+                            <label asp-for="CounterSignedAccessKey" class="col-md-3 form-control-label">Counter Signed Access Key</label>
+                            <div class="col-md-9">
+                                <textarea rows="6" asp-for="CounterSignedAccessKey" class="form-control" value="test@test.local"></textarea>
+                                <span asp-validation-for="CounterSignedAccessKey" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-md-3 col-md-9">
+                                <div class="checkbox">
+                                    <label asp-for="RememberMe">
+                                        <input asp-for="RememberMe" />
+                                        Remember Me
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-md-3 col-md-10">
+                                <button type="submit" class="btn btn-secondary">Login</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

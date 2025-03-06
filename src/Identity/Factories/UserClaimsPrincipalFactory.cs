@@ -23,7 +23,10 @@ namespace Identity.Factories
                 ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);
             id.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId));
-            id.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, username));
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                id.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, username));
+            }
 
             if (user.SecurityStamp != null)
             {
