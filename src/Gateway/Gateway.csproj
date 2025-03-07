@@ -11,4 +11,10 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Authority\Authority.csproj" />
+      <ProjectReference Include="..\DebugHelper\DebugHelper.csproj" />
+      <ProjectReference Include="..\Jwks\Jwks.csproj" />
+    </ItemGroup>
+
 </Project>

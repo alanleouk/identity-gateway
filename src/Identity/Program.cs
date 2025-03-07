@@ -1,4 +1,5 @@
-using System.Net;
+using Authority.Services;
+using DebugHelper;
 using Identity;
 using Identity.Configuration;
 using Identity.Factories;
@@ -24,20 +25,12 @@ var services = builder.Services;
 // IdentityModelEventSource.ShowPII = true;
 #endif
 
-#if DEBUG
-builder.WebHost.ConfigureKestrel((context, serverOptions) =>
-{
-    var kestrelSection = context.Configuration.GetSection("Kestrel");
+// Authority Service
+var authorityService = new AuthorityService(configuration.GetSection("Authority"));
+services.AddSingleton(authorityService);
 
-    serverOptions.Configure(kestrelSection)
-        .Endpoint("Https", listenOptions =>
-        {
-            if (listenOptions.ListenOptions.IPEndPoint != null)
-            {
-                listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Parse("127.0.0.1");
-            }
-        });
-});
+#if DEBUG
+builder.DebugOnKestrel(authorityService.PrimaryAuthority);
 #endif
 
 services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -51,10 +44,6 @@ services.AddDataProtection()
 services.AddDbContext<IdentityDbContext>(o =>
     o.UseSqlServer(configuration.GetConnectionString("PrimaryConnection"),
         x => x.MigrationsAssembly("Identity")));
-
-// Authority Service
-var authorityService = new AuthorityService(configuration.GetSection("Authority"));
-services.AddSingleton(authorityService);
 
 // Trusted Key Service
 services.AddSingleton(new TrustedKeyService(configuration.GetSection("TrustedKeys")));
@@ -139,8 +128,8 @@ services.AddScoped<IIdentityValidator<User>, UserValidator>();
 services.AddSingleton<IUserClaimsPrincipalFactory, UserClaimsPrincipalFactory>();
 
 // Jwks
-var jwksBuilder = services.AddJwksServices();
-jwksBuilder.AddDeveloperSigningCredential();
+services.AddJwksServices()
+    .AddDeveloperSigningCredential();
 
 // App
     

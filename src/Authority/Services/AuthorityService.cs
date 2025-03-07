@@ -1,6 +1,6 @@
-using Microsoft.IdentityModel.Protocols.Configuration;
+using Microsoft.Extensions.Configuration;
 
-namespace Identity.Services;
+namespace Authority.Services;
 
 public class AuthorityService
 {
@@ -11,13 +11,13 @@ public class AuthorityService
     public AuthorityService(IConfigurationSection configurationSection)
     {
         PrimaryAuthority = configurationSection.GetSection("PrimaryAuthority").Get<string>()
-                           ?? throw new InvalidConfigurationException("PrimaryAuthority is required");
+                           ?? throw new InvalidOperationException("PrimaryAuthority is required");
         AllowedAuthorities = configurationSection.GetSection("AllowedAuthorities").Get<List<string>>()
-                             ?? throw new InvalidConfigurationException("AllowedAuthorities is required");
+                             ?? throw new InvalidOperationException("AllowedAuthorities is required");
 
         if (!AllowedAuthorities.Contains(PrimaryAuthority))
         {
-            throw new InvalidConfigurationException("PrimaryAuthority must be in AllowedAuthorities");
+            throw new InvalidOperationException("PrimaryAuthority must be in AllowedAuthorities");
         }
     }
 }

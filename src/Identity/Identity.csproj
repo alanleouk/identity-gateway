@@ -20,6 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Authority\Authority.csproj" />
+      <ProjectReference Include="..\DebugHelper\DebugHelper.csproj" />
       <ProjectReference Include="..\Jwks\Jwks.csproj" />
     </ItemGroup>
 
