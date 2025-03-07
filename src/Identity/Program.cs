@@ -26,11 +26,11 @@ var services = builder.Services;
 #endif
 
 // Authority Service
-var authorityService = new AuthorityService(configuration.GetSection("Authority"));
-services.AddSingleton(authorityService);
+var authorityConfig = new AuthorityConfig(configuration.GetSection("Authority"));
+services.AddSingleton(authorityConfig);
 
 #if DEBUG
-builder.DebugOnKestrel(authorityService.PrimaryAuthority);
+builder.DebugOnKestrel(authorityConfig.PrimaryAuthority);
 #endif
 
 services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -45,11 +45,8 @@ services.AddDbContext<IdentityDbContext>(o =>
     o.UseSqlServer(configuration.GetConnectionString("PrimaryConnection"),
         x => x.MigrationsAssembly("Identity")));
 
-// Trusted Key Service
-services.AddSingleton(new TrustedKeyService(configuration.GetSection("TrustedKeys")));
-
 // Cors
-var origins = authorityService.AllowedAuthorities
+var origins = authorityConfig.Authorities
     .Select(item => item)
     .ToList();
 origins.Add("https://jwt.io");

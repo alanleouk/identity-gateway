@@ -6,11 +6,11 @@ var configuration = builder.Configuration;
 var services = builder.Services;
 
 // Authority Service
-var authorityService = new AuthorityService(configuration.GetSection("Authority"));
-services.AddSingleton(authorityService);
+var authorityConfig = new AuthorityConfig(configuration.GetSection("Authority"));
+services.AddSingleton(authorityConfig);
 
 #if DEBUG
-builder.DebugOnKestrel(authorityService.PrimaryAuthority);
+builder.DebugOnKestrel(authorityConfig.PrimaryAuthority);
 #endif
 
 // Jwks
