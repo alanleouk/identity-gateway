@@ -3,7 +3,6 @@
     public static class EndpointConstants
     {
         public const string Configuration = "/.well-known/openid-configuration";
-        public const string Jwks = "/.well-known/openid-configuration/jwks";
         public const string Authorization = "/connect/authorize";
         public const string Token = "/connect/token";
         public const string Userinfo = "/connect/userinfo";

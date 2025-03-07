@@ -1,9 +1,12 @@
-﻿
-using Identity.Models;
-using Services;
+﻿using Jwks.Models;
 
-namespace Identity.Services
+namespace Jwks.Services
 {
+    public interface IPublicCredentialsService
+    {
+        public IList<PublicJsonWebKey> PublicJsonWebKeys();
+    }
+
     public class PublicCredentialService : IPublicCredentialsService
     {
         public readonly ICredentialsService _credentialsService;

@@ -7,7 +7,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://local-5.dev.alanleouk.net",
+      "applicationUrl": "https://local-1.dev.alanleouk.net",
       "dotnetRunMessages": true
     }
   }

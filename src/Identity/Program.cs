@@ -20,19 +20,6 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var services = builder.Services;
 
-// TODO: Move to config and use when signing, etc
-var endpoints = new List<string>
-{
-    "https://localhost",
-    "https://local-5.dev.alanleouk.net"
-};
-
-// TODO: Move to config and use in CounterSignedAccessKeyLogin services
-var trustedKeys = new List<string>
-{
-    "https://local-5.dev.alanleouk.net/.well-known/openid-configuration/jwks?kid=07Zb%2FMNJU4UtG3GLJbm7"
-};
-
 #if DEBUG
 // IdentityModelEventSource.ShowPII = true;
 #endif
@@ -47,7 +34,7 @@ builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
             if (listenOptions.ListenOptions.IPEndPoint != null)
             {
-                listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Parse("127.0.0.5");
+                listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Parse("127.0.0.1");
             }
         });
 });
@@ -65,8 +52,15 @@ services.AddDbContext<IdentityDbContext>(o =>
     o.UseSqlServer(configuration.GetConnectionString("PrimaryConnection"),
         x => x.MigrationsAssembly("Identity")));
 
+// Authority Service
+var authorityService = new AuthorityService(configuration.GetSection("Authority"));
+services.AddSingleton(authorityService);
+
+// Trusted Key Service
+services.AddSingleton(new TrustedKeyService(configuration.GetSection("TrustedKeys")));
+
 // Cors
-var origins = endpoints
+var origins = authorityService.AllowedAuthorities
     .Select(item => item)
     .ToList();
 origins.Add("https://jwt.io");
@@ -144,8 +138,9 @@ services.AddScoped<ILoginService, LoginService>();
 services.AddScoped<IIdentityValidator<User>, UserValidator>();
 services.AddSingleton<IUserClaimsPrincipalFactory, UserClaimsPrincipalFactory>();
 
-// TODO: Add credentials from KeyVault
-services.AddDeveloperSigningCredential();
+// Jwks
+var jwksBuilder = services.AddJwksServices();
+jwksBuilder.AddDeveloperSigningCredential();
 
 // App
     
@@ -179,13 +174,18 @@ app.AddDevelopmentData();
 #endif
 
 // Features
+app.UseJwks();
+
 app.MapGet(EndpointConstants.Configuration,
     async (HttpContext context, [FromServices] IMediator mediator) =>
-    await mediator.Send(new GetConfigurationFeature.Request()));
-
-app.MapGet(EndpointConstants.Jwks,
-    async (HttpContext context, [FromServices] IMediator mediator, [FromQuery] string? kid = null) =>
-    await mediator.Send(new GetJwksFeature.Request { Kid = kid }));
+    {
+        var authority = context.Request.Scheme + "://" + context.Request.Host;
+        var request = new GetConfigurationFeature.Request
+        {
+            Authority = authority
+        };
+        return await mediator.Send(request);
+    });
 
 app.MapPost(EndpointConstants.Token,
     async (HttpContext context, [FromServices] IMediator mediator,
@@ -195,6 +195,7 @@ app.MapGet(EndpointConstants.Authorization, async (HttpContext context, [FromSer
     string? response_type, string? response_mode, string? scope, string? client_id, string? state, string? redirect_uri,
     string? nonce, string? request_uri) =>
 {
+    var authority = context.Request.Scheme + "://" + context.Request.Host;
     var request = new GetAuthorizeFeature.Request
     {
         ResponseType = response_type,
@@ -204,15 +205,25 @@ app.MapGet(EndpointConstants.Authorization, async (HttpContext context, [FromSer
         State = state,
         RedirectUri = redirect_uri,
         Nonce = nonce,
-        RequestUri = request_uri
+        RequestUri = request_uri,
+        Authority = authority
     };
+
+    
 
     await mediator.Send(request);
 });
 
 app.MapGet(EndpointConstants.Userinfo,
     [Authorize, AllowAnonymous] async (HttpContext context, [FromServices] IMediator mediator) =>
-    await mediator.Send(new GetUserInfoFeature.Request()));
+    {
+        var authority = context.Request.Scheme + "://" + context.Request.Host;
+        var request = new GetUserInfoFeature.Request
+        {
+            Authority = authority
+        };
+        return await mediator.Send(request);
+    });
 
 app.MapGet(EndpointConstants.EndSession, async (HttpContext context, [FromServices] IMediator mediator,
     string? id_token_hint, string? post_logout_redirect_uri, string? state) =>

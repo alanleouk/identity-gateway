@@ -33,9 +33,9 @@ public class GetAuthorizeFeature
 
         [JsonPropertyName("request_uri")]
         public string? RequestUri { get; set; }
-
-        // [JsonPropertyName("request")]
-        // public string? RequestProperty { get; set; }
+        
+        [JsonIgnore]
+        public string? Authority { get; set; }
     }
 
     public class Response
@@ -68,22 +68,20 @@ public class GetAuthorizeFeature
             }
 
             var userId = _userContextService.UserId;
-            // userId = new Guid("ba2bff88-d68b-47e1-ab22-2a5ecc5eddd1"); // TODO: Debug
             var email = "mail@todo.local";
             var scopes = new List<string>();
-            if (request?.Scope != null)
+            if (request.Scope != null)
             {
                 scopes.AddRange(request.Scope.Split(' ', ','));
             }
             // scopes.Add("identity_api"); // TODO: Identity API Claim
 
-            if (request == null || request?.ClientId == null || userId == null)
+            if (request.ClientId == null || userId == null)
             {
                 return response;
             }
 
             var authorized = _userContextService.IsAuthenticated();
-            // authorized = true; // TODO: Debug
 
             var tokenServiceRequest = new TokenServiceRequest();
             tokenServiceRequest.ClientId = request.ClientId;
@@ -93,9 +91,8 @@ public class GetAuthorizeFeature
             tokenServiceRequest.Nonce = request.Nonce;
 
             var accessTokenRequired = request.ResponseType == "token" || request.ResponseType == "id_token token";
-            // TODO: https://local-5.dev.alanleouk.net"; // TODO: We are the authority (DynamicAuthority)
             var accessToken = accessTokenRequired
-                ? _tokenService.CreateAccessToken(tokenServiceRequest, "https://local-5.dev.alanleouk.net")
+                ? _tokenService.CreateAccessToken(tokenServiceRequest, request.Authority)
                 : null;
 
             var idTokenRequired = request.ResponseType == "id_token" || request.ResponseType == "id_token token";

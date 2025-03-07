@@ -8,7 +8,8 @@ public class GetConfigurationFeature
 {
     public class Request : IRequest<Response>
     {
-
+        [JsonIgnore]
+        public string? Authority { get; set; }
     }
 
     public class Response
@@ -94,7 +95,7 @@ public class GetConfigurationFeature
         public Response(string issuer)
         {
             Issuer = issuer;
-            JwksUri = $"{issuer}{EndpointConstants.Jwks}";
+            JwksUri = $"{issuer}{Jwks.Constants.EndpointConstants.Jwks}";
             AuthorizationEndpoint = $"{issuer}{EndpointConstants.Authorization}";
             TokenEndpoint = $"{issuer}{EndpointConstants.Token}";
             UserinfoEndpoint = $"{issuer}{EndpointConstants.Userinfo}";
@@ -177,10 +178,7 @@ public class GetConfigurationFeature
         public async Task<Response> Handle(Request request, CancellationToken ct)
         {
             Console.WriteLine("Configuration Request");
-
-            // TODO: https://local-5.dev.alanleouk.net"; // TODO: We are the authority (DynamicAuthority)
-            
-            var response = new Response("https://local-5.dev.alanleouk.net");
+            var response = new Response(request.Authority);
             return await Task.FromResult(response);
         }
     }

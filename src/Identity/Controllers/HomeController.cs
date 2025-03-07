@@ -13,13 +13,16 @@ namespace Identity.Controllers
         private readonly IdentityDbContext _db;
         private readonly ITokenService _tokenService;
         private readonly IUserService _userService;
+        private readonly AuthorityService _authorityService;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IdentityDbContext db, ITokenService tokenService, IUserService userService, ILogger<HomeController> logger)
+        public HomeController(IdentityDbContext db, ITokenService tokenService, IUserService userService,
+            AuthorityService authorityService, ILogger<HomeController> logger)
         {
             _db = db;
             _tokenService = tokenService;
             _userService = userService;
+            _authorityService = authorityService;
             _logger = logger;
         }
 
@@ -51,7 +54,7 @@ namespace Identity.Controllers
                 PublicKey = User.Claims.FirstOrDefault(item => item.Type == "public_key")?.Value
             };
 
-            var token = _tokenService.CreateAccessToken(tokenServiceRequest, "https://local-5.dev.alanleouk.net");
+            var token = _tokenService.CreateAccessToken(tokenServiceRequest, _authorityService.PrimaryAuthority);
 
             ViewData["Jwt"] = token;
 

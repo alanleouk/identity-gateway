@@ -1,6 +1,8 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+
 namespace MediatR;
 
-public static class MediatRExtensions
+public static class MyExtensions
 {
     public static IServiceCollection MyAddMediatR(this IServiceCollection services, params string[] assemblyNames)
     {

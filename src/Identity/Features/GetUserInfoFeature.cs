@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using Identity.Services;
 using MediatR;
-using Services;
 
 namespace Microsoft.Extensions.DependencyInjection.Features;
 
@@ -9,7 +8,8 @@ public class GetUserInfoFeature
 {
     public class Request : IRequest<Response>
     {
-        
+        [JsonIgnore]
+        public string? Authority { get; set; }
     }
     
     public class Response
@@ -62,8 +62,7 @@ public class GetUserInfoFeature
 
                 if (!string.IsNullOrWhiteSpace(bearerToken))
                 {
-                    // TODO: https://local-5.dev.alanleouk.net"; // TODO: We are the authority (DynamicAuthority)
-                    var securityToken = _tokenService.ValidateToken(bearerToken, "https://local-5.dev.alanleouk.net");
+                    var securityToken = _tokenService.ValidateToken(bearerToken, request.Authority);
                     if (securityToken != null)
                     {
                         response.Subject = securityToken.Subject;

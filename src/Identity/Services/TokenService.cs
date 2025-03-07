@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Identity.Constants;
+using Jwks.Services;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Identity.Services

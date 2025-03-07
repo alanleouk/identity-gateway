@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace Identity.Services
+namespace Jwks.Services
 {
     public interface ICredentialsService
     {

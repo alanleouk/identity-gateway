@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Identity.Models
+namespace Jwks.Models
 {
     public class PublicJsonWebKey
     {

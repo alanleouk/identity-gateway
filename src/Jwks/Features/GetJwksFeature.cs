@@ -1,8 +1,8 @@
-using Identity.Models;
+using Jwks.Models;
+using Jwks.Services;
 using MediatR;
-using Services;
 
-namespace Microsoft.Extensions.DependencyInjection.Features;
+namespace Jwks;
 
 public class GetJwksFeature
 {
